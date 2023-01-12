@@ -1,9 +1,8 @@
 import express from 'express'
 import http from 'http'
-import { createSession } from './services/sessionService.js'
+import { createSession } from './middleware/sessionService.js'
 import routerPosts from './routes/posts.js'
 import routerUsers from './routes/users.js'
-import routerChats from './routes/chats.js'
 import routerStatic from './routes/static.js'
 import routerStaticAuth from './routes/staticAutorized.js'
 import * as dotenv from 'dotenv'
@@ -11,6 +10,8 @@ import morgan from 'morgan'
 import { CSRFGuard } from './middleware/antiCsrf.js'
 import helmet from 'helmet'
 import * as bodyParser from 'express'
+import { pictureUploadGuard } from './services/picture-service.js'
+import { preventXss } from './middleware/anitXss.js'
 
 dotenv.config()
 
@@ -25,12 +26,16 @@ app.use(
 )
 app.use(helmet())
 app.use(express.static('public'))
-app.use(createSession())
 app.use(morganMiddleware)
+app.get('/healthz', (req, res) => {
+  res.sendStatus(200)
+})
+app.use(createSession())
+app.use(pictureUploadGuard)
 app.use(CSRFGuard)
+app.use(preventXss)
 app.use(routerUsers)
 app.use(routerPosts)
-app.use(routerChats)
 app.use(routerStatic)
 app.use(routerStaticAuth)
 

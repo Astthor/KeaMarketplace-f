@@ -44,13 +44,6 @@ fetch('/api/post/' + postId)
                         .then((userInfo) => {
                             userInfo = userInfo.user
                             user = userInfo.firstName + ' ' + userInfo.lastName
-                            const chatLink = createDivTag(
-                                'a',
-                                'post-user',
-                                'Send a message to: ' + user
-                            )
-                            chatLink.href = '/chats/' + post.user
-                            postViewElement.appendChild(chatLink)
                         })
                 }
             })
@@ -58,6 +51,13 @@ fetch('/api/post/' + postId)
             postViewElement.appendChild(
                 createDivTag('h1', 'post-title', post.title)
             )
+						if(post.fileName){
+							const img = new Image(); // width, height
+							img.src = "../assets/post-images/"+post.fileName;
+							postViewElement.appendChild(
+								img
+							)
+						}
             postViewElement.appendChild(
                 createDivTag('div', 'post-description', post.description)
             )
@@ -81,7 +81,11 @@ function createDivTag(tag, className, content, id) {
 function deletePost() {
     fetch('/api/post/' + postId, {
         method: 'DELETE',
-    })
+    }).then((res) => {
+			window.location.href=window.location.origin
+		}).catch((err) => {
+			window.location.href=window.location.origin + "/404"
+		});
 }
 
 function updatePost() {

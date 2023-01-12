@@ -10,6 +10,7 @@ import {
     getAllPostsBySearch,
 } from '../services/postService.js'
 import { userRoleMapper } from '../util/typeMapper.js'
+import { deleteFile } from '../services/picture-service.js'
 
 const routerPosts = express.Router()
 
@@ -44,6 +45,7 @@ routerPosts.all('/api/post/*', (req, res, next) => {
     }
 })
 
+
 routerPosts.get('/api/post/me/:id', async (req, res) => {
     const post = await getPostById(
         req.params.id,
@@ -64,17 +66,30 @@ routerPosts.get('/api/post/:id', (req, res) => {
 })
 
 routerPosts.post('/api/post', (req, res) => {
-    // should make a check that we are receiving only post things
-    createPost(req.session.userId, req.body).then(() => {
-        //TODO: handle response
-        //res.send(post) //maybe should return a json object and the redirect will happen from the public folder
-        res.redirect('/')
-    })
+    try {
+        console.log('api/post: ', req.body)
+				if(!req.session.userId){
+					res.redirect('/error')
+					return;
+				}
+        createPost(req.session.userId, req.body).then(() => {
+            //TODO: handle response
+            //res.send(post) //maybe should return a json object and the redirect will happen from the public folder
+            res.redirect('/')
+        })
+    } catch (e) {
+        console.log('Error creating post: ' + e.message)
+        // Most likely a post will have included a file, in which case we want to delete it since posting failed.
+        if (req.file) {
+            deleteFile(req.file)
+        }
+        res.redirect('/error')
+    }
 })
 
 routerPosts.patch('/api/post/:id', (req, res) => {
     updatePost(req.session.userId, req.body, req.params.id).then((response) => {
-        response ? res.redirect('/') : res.sendStatus(401)
+        response ? res.json({ message: 'Success' }) : res.sendStatus(401)
     })
 })
 
@@ -87,7 +102,14 @@ routerPosts.delete('/api/post/:id', async (req, res) => {
         req.session.userId,
         req.session.role
     )
-    deletePost ? res.redirect('/') : res.redirect('/resourceNotFound')
+    deletePost ? res.sendStatus(200) : res.redirect('/resourceNotFound')
+})
+
+routerPosts.use((err, req, res, _next) => {
+    if (err) {
+        // A Multer error occurred when handling the file upload
+        return res.redirect('/error')
+    }
 })
 
 export default routerPosts

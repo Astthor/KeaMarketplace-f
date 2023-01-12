@@ -25,6 +25,11 @@ const profileNav = fs.readFileSync(
     'utf-8'
 )
 
+const errorPage = fs.readFileSync(
+    __dirname + '/public/components/errors/errorPage.html',
+    'utf-8'
+)
+
 const nav = fs.readFileSync(
     __dirname + '/public/templates/navbar/navbar.html',
     'utf-8'
@@ -56,16 +61,17 @@ const updatePost = fs.readFileSync(
     'utf-8'
 )
 
-const chat = fs.readFileSync(
-    __dirname + '/public/components/chat/chat.html',
-    'utf-8'
-)
 const viewPost = fs.readFileSync(
     __dirname + '/public/components/post/viewPost.html',
     'utf-8'
 )
-const chatList = fs.readFileSync(
-    __dirname + '/public/components/chatList/chatList.html',
+
+const failedSignup = fs.readFileSync(
+    __dirname + '/public/components/signup/failed/signup-failed.html',
+    'utf-8'
+)
+const completeSignup = fs.readFileSync(
+    __dirname + '/public/components/signup/complete/signup-complete.html',
     'utf-8'
 )
 const pageNotFound = fs.readFileSync(
@@ -84,13 +90,14 @@ export {
     nav,
     feed,
     login,
+    completeSignup,
     confirmLogin,
     signup,
     createPost,
-    chat,
     viewPost,
-    chatList,
     pageNotFound,
+    failedSignup,
     cookieModal,
     updatePost,
+    errorPage,
 }

@@ -8,7 +8,10 @@ import {
     login,
     confirmLogin,
     signup,
+    errorPage,
     cookieModal,
+    failedSignup,
+    completeSignup,
 } from '../static-pages/staticPages.js'
 
 function title(titleName) {
@@ -37,6 +40,10 @@ routerStatic.use(function (req, res, next) {
 
 routerStatic.get('/', (req, res) => {
     res.send(CSS + title('H2H') + navbar + feed + FOOTER)
+})
+
+routerStatic.get('/error', (req, res) => {
+    res.send(CSS + title('H2H') + navbar + errorPage + FOOTER)
 })
 
 routerStatic.get('/requested', (req, res) => {
@@ -70,23 +77,11 @@ routerStatic.get('/signup', (req, res) => {
 })
 
 routerStatic.get('/signup/complete', (req, res) => {
-    res.send(
-        CSS +
-            title('H2H - Signup') +
-            navbar +
-            '<script>alert("Please check your email for complete the signup process");  window.location.href = "/"</script>' +
-            FOOTER
-    )
+    res.send(CSS + title('H2H - Signup') + navbar + completeSignup + FOOTER)
 })
 
 routerStatic.get('/signup/failed', (req, res) => {
-    res.send(
-        CSS +
-            title('H2H - Signup') +
-            navbar +
-            '<script>alert("we could not complete your signup process please try again");  window.location.href = "/signup"</script>' +
-            FOOTER
-    )
+    res.send(CSS + title('H2H - Signup') + navbar + failedSignup + FOOTER)
 })
 
 export default routerStatic

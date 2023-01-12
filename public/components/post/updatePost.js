@@ -1,5 +1,11 @@
 const postId = window.location.pathname.split('/updatePost/')[1] //get the post id from the url
 
+fetch('/api/csrf-token')
+    .then((res) => res.json())
+    .then((userInfo) => {
+        document.getElementById('csrfToken').value = userInfo.csrfToken
+    })
+
 document
     .getElementById('form-post-submit')
     .addEventListener('click', submitForm)
@@ -32,5 +38,11 @@ function submitForm(e) {
         headers: {
             'Content-type': 'application/json; charset=UTF-8',
         },
-    }).then((response) => response)
+    })
+        .then((response) => response.json())
+        .then((result) => {
+            result.message === 'Success'
+                ? window.location.replace('/')
+                : window.location.replace('/error')
+        })
 }

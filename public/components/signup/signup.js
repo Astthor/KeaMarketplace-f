@@ -10,11 +10,11 @@ const passwordRegex = new RegExp(
     '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-+_!@#$%^&*.,?]).+$'
 )
 
-firstName.addEventListener('keydown', checkingInput)
-lastName.addEventListener('keydown', checkingInput)
-email.addEventListener('keydown', checkingInput)
-password.addEventListener('keydown', checkingInput)
-rePassword.addEventListener('keydown', checkingInput)
+firstName.addEventListener('keyup', checkingInput)
+lastName.addEventListener('keyup', checkingInput)
+email.addEventListener('keyup', checkingInput)
+password.addEventListener('keyup', checkingInput)
+rePassword.addEventListener('keyup', checkingInput)
 
 function checkingInput() {
     //valid user input
@@ -26,6 +26,7 @@ function checkingInput() {
         password.value === rePassword.value,
         password.value.length > 7,
     ]
+    console.log(checks)
     !checks.includes(false)
         ? (button.disabled = false)
         : (button.disabled = true)
